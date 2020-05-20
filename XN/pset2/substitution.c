@@ -8,7 +8,7 @@ int main(int argc, string argv[])
     int i,j;
     char key[52];
     
-    const char* cipher(string plain, string key);
+    char *cipher(string plain, string key);
     
     //check if user inputs a key in the command line
     if(argc != 2){
@@ -38,30 +38,35 @@ int main(int argc, string argv[])
             }
         }
     }
-    //printf("%s\n", argv[1]);
+    //creating an array to sore the key, [0]-[25] stores the uppercase and [26]-[51] stores lowercase
     for(i =  0; i < 26; i++){
         key[i] = (char)toupper(argv[1][i]);
     }
     for (i = 26; i < 52; i++){
         key[i] = (char)tolower(argv[1][i-26]);
     }
-    //printf("%s\n", key);
 
     
     string plaintext;
     
     plaintext = get_string("plaintext: ");
-    printf("ciphertext: %s \n", cipher(plaintext, key));
+    printf("ciphertext: %s\n", cipher(plaintext, key));
 }
 
-const char* cipher(string plain, string key){
+//as string in C is an array of char, the function cannot return the entire string directly,
+//so we have to make it return a pointer that points to the start of the string
+char *cipher(string plain, string key){
     int i;
+    //variable n that depends on the length of user input
     int n = strlen(plain);
-    char ciphertext[n];
-    for(i = 0; i < n; i++){
+    char ciphertext[n]; 
+    //important to note here that we need to iterate till i < n+1 to copy the '\0' char
+    for(i = 0; i < n+1; i++){
         if(isalpha(plain[i])){
             //cipher alphabets
             if(isupper(plain[i])){
+                //converting plaintext to ciphertext through arithmetic operation on ASCII 
+                //code to produce corresponding index in the key array
                 ciphertext[i] = key[plain[i]-65];
             }
             else{
@@ -73,6 +78,8 @@ const char* cipher(string plain, string key){
             ciphertext[i] = plain[i];
         }
     }
+    //pointer to point to the address of the first char of ciphertext
     char *ctext = ciphertext;
+    //returns the address stored in the pointer
     return ctext;
 }
